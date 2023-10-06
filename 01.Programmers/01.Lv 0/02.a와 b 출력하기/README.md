@@ -1,4 +1,4 @@
-# [level 1] a와 b 출력하기
+# [level 0] a와 b 출력하기
 
 * [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181951) 
 
