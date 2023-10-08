@@ -21,7 +21,7 @@ public class Solution {
 ```
 
 ##### 참고사이트
-1. [참고 링크](https://organize1202.tistory.com/17)
+1. [참고 링크](https://organize1202.tistory.com/17) 
 
 
 ### 느낀점
