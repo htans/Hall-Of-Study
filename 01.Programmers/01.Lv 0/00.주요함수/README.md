@@ -13,7 +13,6 @@ int N = 10;
 int[] list = new int[N];
 ```
 
-
 ### 형 변환
 
 ```java
