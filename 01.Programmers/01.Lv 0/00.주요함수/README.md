@@ -2,7 +2,6 @@
 
 
 ### 변수 선언
-
 ```java
 StringBuffer str = new StringBuffer(my_string);
 
@@ -13,17 +12,19 @@ int N = 10;
 int[] list = new int[N];
 ```
 
-### 형 변환
 
+### 형 변환
 ```java
 // String => Integer
-String str = "100";
 int intstr = Integer.parseInt(str);
+
+// Double => Integer
+int result = (int) Math.ceil(str);
 ```
 
-### 계산식
 
+### 계산식
 ```java
 // 제곱 함수 - 밑수, 지수
-Math.power(double, double)
+double result = Math.pow(1, 2);
 ```
