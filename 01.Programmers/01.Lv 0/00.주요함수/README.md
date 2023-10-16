@@ -20,3 +20,10 @@ int[] list = new int[N];
 String str = "100";
 int intstr = Integer.parseInt(str);
 ```
+
+### 계산식
+
+```java
+// 제곱 함수 - 밑수, 지수
+Math.power(double, double)
+```
