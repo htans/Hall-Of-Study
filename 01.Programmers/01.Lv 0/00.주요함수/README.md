@@ -3,7 +3,7 @@
 
 ### 변수 선언
 ```java
-StringBuffer str = new StringBuffer(my_string);
+StringBuffer str = new StringBuffer(my_str);
 
 String[] list = new String[10];
 String[] list = a.split("");
