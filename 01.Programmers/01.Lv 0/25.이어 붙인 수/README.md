@@ -23,9 +23,9 @@ class Solution {
             
             if(num_list[i] % 2 == 0) {
                 sumstr2 += "" + num_list[i];
-            }
             
             if(num_list.length -1 == i ) {
+            }
                 int intstr = Integer.parseInt(sumstr);
                 int intstr2 = Integer.parseInt(sumstr2);
                 
