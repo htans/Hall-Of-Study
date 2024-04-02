@@ -1,24 +1,19 @@
-# [level 0] 카운트 다운
+# [level 0] 가까운 1 찾기
 
-* [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181899)
+* [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181898)
 
 
 ### 실행문
 ```java
-import java.util.ArrayList;
-
 class Solution {
-    public int[] solution(int start, int end_num) {
+    public int solution(int[] arr, int idx) {
+        int answer = -1;
         
-        ArrayList<Integer> answerList = new ArrayList<> ();
-        
-        for (int i = start; i >= end_num; i--) {
-            answerList.add(i);
-        }
-        
-        int[] answer = new int[answerList.size()];
-        for(int i = 0; i < answerList.size(); i++ ) {
-            answer[i] = answerList.get(i);
+        for(int i = idx; i < arr.length; i++) {
+            if(idx <= i && arr[i] == 1) {
+                answer = i;
+                break;
+            }
         }
         
         return answer;
@@ -32,5 +27,8 @@ class Solution {
 
 ### 느낀점
 ```
-ㅋ 
+테스트 문제 과정에서 계속 실패 결과가 나와서 많이 고민을 했습니다.
+질문하기에서 문제 자체에 이슈가 있는것을 알았고, 다행히 해결 할 수 있었습니다.
+그리고 테스트 케이스를 통과했는데, 결과 테스트에서 정확도가 23%가 나와서 뭐지? 했었는데
+다양한 테스트 케이스를 넣고 테스트 해보니, break가 필요한 부분 이였습니다.
 ``` 
