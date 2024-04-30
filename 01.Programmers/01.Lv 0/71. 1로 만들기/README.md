@@ -31,7 +31,6 @@ class Solution {
         return work_count;
     }
 }
-
 ```
 
 
