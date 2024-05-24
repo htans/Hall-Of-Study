@@ -1,6 +1,6 @@
 # [level 0] 세 개의 구분자
 
-* [문제 링크](hhttps://school.programmers.co.kr/learn/courses/30/lessons/181862#)
+* [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/181862#)
 
 
 ### 실행문
@@ -75,8 +75,6 @@ class Solution {
         }
     }
 }
-
-
 ```
 
 
