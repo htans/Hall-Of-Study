@@ -28,10 +28,33 @@ class Solution {
 }
 ```
 
+### ChatGPT
+```java
+class Solution {
+    public int solution(int[][] arr) {
+        int n = arr.length;
+        
+        for(int i = 0; i < n; i++ ) {
+            for(int j = i + 1; j < n; j++) {
+                if(arr[i][j] != arr[j][i]) {
+                    return 0;
+                }
+            }
+        }
+        
+        return 1;
+    }
+}
+```
+
 ##### 참고사이트
+
+
 
 
 ### 느낀점
 ```
 세상에... 문제도 이해하는데 한참... ㅠㅠ...
+문제를 통과해도 ChatGPT한테 물어보면서 간소화를 시키고, 다른 프로토콜이 있는지, 더 간단하고 유지보수가 좋은 소스를 생각하기 위해 
+노력해야 겠음요
 ``` 
