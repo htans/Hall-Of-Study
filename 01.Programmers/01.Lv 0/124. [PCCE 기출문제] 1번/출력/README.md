@@ -1,4 +1,4 @@
-# [level 0] [PCCE 기출문제] 1번
+# [level 0] [PCCE 기출문제] 1번 / 출력
 
 * [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/250133)
 
