@@ -1,12 +1,19 @@
-# Algorithm Study
+# 📝 Hall Of Study (공부의 전당)
 
-> **Purpose**:  
-이 프로젝트는 알고리즘 문제 풀이 및 강의를 듣고 학습한 내용을 기록하며, 
-개인적으로 공부하고 성장하는 과정을 기록하기 위한 것입니다.
+
+## **소개**
+> 이 프로젝트는 저의 올바른 개발 가치관과 개발 능력 향상을 위해 진행하는 개인 프로젝트입니다.
+알고리즘 문제 풀이 및 강의를 듣고 학습한 내용을 기록하며, 주도적인 학습으로 공부하고 성장하는 과정을 기록하기 위함 입니다.
 
 ---
 
-## 💾   Folder of Contents
-1. [Programmers](##https://school.programmers.co.kr/)
-   - Lv 0
-   - Lv 1
+## 🗿Algorithm (알고리즘)
+> 문제를 명확하게 인지하고 알고리즘을 설계하고 구현하며, 다른 알고리즘 방법을 참고하여 최선의 결과를 도출하는 과정을 기록합니다.
+
+---
+
+## 💾 Folder of Contents
+### Algorithm
+   - [Programmers](##https://school.programmers.co.kr/)
+      - Lv 0
+      - Lv 1
