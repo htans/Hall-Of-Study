@@ -51,7 +51,6 @@ class Solution {
         return "Yes";
     }
 }
-
 ```
 
 ##### 참고사이트
