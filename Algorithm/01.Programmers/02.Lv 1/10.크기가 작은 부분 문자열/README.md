@@ -55,7 +55,6 @@ class Solution {
         return answer;
     }
 }
-
 ```
 
 ##### 참고사이트
