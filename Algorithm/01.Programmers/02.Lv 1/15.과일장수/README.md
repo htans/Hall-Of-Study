@@ -35,7 +35,6 @@ class Solution {
         return answer;
     }
 }
-
 ```
 
 ### ChatGPT
@@ -62,7 +61,6 @@ class Solution {
         return answer;
     }
 }
-
 ```
 
 ##### 참고사이트
