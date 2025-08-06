@@ -1,6 +1,6 @@
 # [level 1] 정수 내림차순을 배치하기
 
-* [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12934)
+* [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12933)
 
 
 ### 실행문
