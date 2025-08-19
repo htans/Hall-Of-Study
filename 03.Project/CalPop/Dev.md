@@ -7,57 +7,57 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
 ---
 
 ## 템플릿  
-- URL: https://preview.themeforest.net/item/ecme-nextjs-tailwind-admin-template-app-router/full_screen_preview/56475600  
-- 템플릿을 구매하면 크게 TypeScript, JavaScript 가 나오는데, TypeScript로 선정
-  - Demo : 참고용
-  - Starter : 개발 셋업용
-  - documentation : index.html이 온라인 문서로 연동됨
+  - URL: https://preview.themeforest.net/item/ecme-nextjs-tailwind-admin-template-app-router/full_screen_preview/56475600  
+  - 템플릿을 구매하면 크게 TypeScript, JavaScript 가 나오는데, TypeScript로 선정
+    - Demo : 참고용
+    - Starter : 개발 셋업용
+    - documentation : index.html이 온라인 문서로 연동됨
 
 ## Installation
-- Node.js / npm 필요  
-- 압축 해제 후 `TypeScript/starter` 폴더에서 작업 시작  
-- 패키지 설치  
-  ```bash
-  npm install
-  npm run dev
-  ```
+  - Node.js / npm 필요  
+  - 압축 해제 후 `TypeScript/starter` 폴더에서 작업 시작  
+  - 패키지 설치  
+    ```bash
+    npm install
+    npm run dev
+    ```
 
-## TailWend CSS
-- 템플릿 전체가 TailWend 로 구성되어 있음
-- 일부 컴포넌트 에서는 @apply 디렉티브 구성으로 되어있음
-- 내가 수정할때도 @apply + import 구성으로 유틸리티 클래스를 재사용
+  ## TailWend CSS
+  - 템플릿 전체가 TailWend 로 구성되어 있음
+  - 일부 컴포넌트 에서는 @apply 디렉티브 구성으로 되어있음
+  - 내가 수정할때도 @apply + import 구성으로 유틸리티 클래스를 재사용
 
 ## .env 
-- 환경변수 파일
-  - 민감한 정보(API Key, DB 사용자 정보, 시크릿 값 ..)은 여기서 관리
-    - 전자정부에 properties 같은 역할
-    - 빌드/런타임 시점에서 접근
-- 파일위치
-  - 프로젝트 루트 디렉토리에 존재
-- 변수 네이밍 규칙
-  - Pubilc  
-    - `NEXT_PUBLIC_` 접두사 붙음
-    - 클라이언트 (JSX, 브라우저) 에서도 접근가능
-    - 원하는 곳으로 자유롭게 이동가능
-  - Private 
-    - 접두사 없음
-    - 서버에서만 접근 가능
-- 접근방법
-  - 서버 사이드 (API Routes / 서버 컴포넌트)
-    ```ts
-    export async function GET() {
-      const databaseUrl = process.env.DATABASE_URL;
-      return new Response('Database URL: ' + databaseUrl);
-    } 
-    ```
-  - 클라이언트 사이드 (React 컴포넌트)
-    ```ts
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+  - 환경변수 파일
+    - 민감한 정보(API Key, DB 사용자 정보, 시크릿 값 ..)은 여기서 관리
+      - 전자정부에 properties 같은 역할
+      - 빌드/런타임 시점에서 접근
+  - 파일위치
+    - 프로젝트 루트 디렉토리에 존재
+  - 변수 네이밍 규칙
+    - Pubilc  
+      - `NEXT_PUBLIC_` 접두사 붙음
+      - 클라이언트 (JSX, 브라우저) 에서도 접근가능
+      - 원하는 곳으로 자유롭게 이동가능
+    - Private 
+      - 접두사 없음
+      - 서버에서만 접근 가능
+  - 접근방법
+    - 서버 사이드 (API Routes / 서버 컴포넌트)
+      ```ts
+      export async function GET() {
+        const databaseUrl = process.env.DATABASE_URL;
+        return new Response('Database URL: ' + databaseUrl);
+      } 
+      ```
+    - 클라이언트 사이드 (React 컴포넌트)
+      ```ts
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
 
-    useEffect(() => {
-        console.log('API Base URL:', apiBaseUrl);
-    }, []);
-    ```
+      useEffect(() => {
+          console.log('API Base URL:', apiBaseUrl);
+      }, []);
+      ```
 
 ## 폴더 디렉토리
   - URL : https://ecme-next.themenate.net/guide/documentation/folder-structure
@@ -463,156 +463,305 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
         - 인증/리다이렉트 제어
           - 요청할때 가로채서 뭔가 처리하는 역할
             - 클럽 앞에 문지기 역할
-### 결론
-- 디렉토리 짱 많다... 필요할때 문서를 참고하면서 찾아보면서 해야할듯
+  ### 결론
+  - 디렉토리 짱 많다... 필요할때 문서를 참고하면서 찾아보면서 해야할듯
 
 ## Routing
-- Next.js 기본 라우팅
-  - 파일 기반 라우팅
-    - `/app` 폴더 안의 파일 = URL 경로
-      - `/app/page.tsx` -> `/`
-      - `/app/articles/page.tsx` -> `/articles`
-      - `/app/articles/[slug]/page.tsx` -> `/articles/anything`
-    - 중첩 라우팅 -> 하위 폴더 = 서브경로
-    - 이게 ㄹㅇ 신기술인듯, 포유잡은 하나하나 다 컨트롤러 만들어주고, 리다이렉션 해줘야하는데 여긴 디렉토리에 넣어주면 바로 뽁뽁 가짐 == 신세계
-- Ecme 커스텀 라우팅 (src/configs/routes.cinfig/index.ts)
-  - Ecme는 Next.js 라우팅에 추가 설정 레이어들 둠
-    - 각 페이지에서 권한/레이아웃/메타데이터를 붙일 수 있음
-  - 라우트 그룹
-    - `publicRoutes`
-      - 로그인 안해도 접근 가능 
-        - 회사 소개, 메인 페이지 등
-    - `protectedRoutes`
-      - 로그인 필요
-        - 마이페이지, 대시보드 등
-    - `authRoutes`
-      - 인증 관련 페이지
-        - 로그인, 회원가입 등
-- 라우팅 설정 구조
-  ```tsx
-  export const protectedRoutes = {
-    '/articles': {
-      key: 'articles',
-      authority: ['admin', 'user'],
-      meta: {
-        pageContainerType: 'contained',
+  - Next.js 기본 라우팅
+    - 파일 기반 라우팅
+      - `/app` 폴더 안의 파일 = URL 경로
+        - `/app/page.tsx` -> `/`
+        - `/app/articles/page.tsx` -> `/articles`
+        - `/app/articles/[slug]/page.tsx` -> `/articles/anything`
+      - 중첩 라우팅 -> 하위 폴더 = 서브경로
+      - 이게 ㄹㅇ 신기술인듯, 포유잡은 하나하나 다 컨트롤러 만들어주고, 리다이렉션 해줘야하는데 여긴 디렉토리에 넣어주면 바로 뽁뽁 가짐 == 신세계
+  - Ecme 커스텀 라우팅 (src/configs/routes.cinfig/index.ts)
+    - Ecme는 Next.js 라우팅에 추가 설정 레이어들 둠
+      - 각 페이지에서 권한/레이아웃/메타데이터를 붙일 수 있음
+    - 라우트 그룹
+      - `publicRoutes`
+        - 로그인 안해도 접근 가능 
+          - 회사 소개, 메인 페이지 등
+      - `protectedRoutes`
+        - 로그인 필요
+          - 마이페이지, 대시보드 등
+      - `authRoutes`
+        - 인증 관련 페이지
+          - 로그인, 회원가입 등
+  - 라우팅 설정 구조
+    ```tsx
+    export const protectedRoutes = {
+      '/articles': {
+        key: 'articles',
+        authority: ['admin', 'user'],
+        meta: {
+          pageContainerType: 'contained',
+        },
       },
-    },
-    '/articles/[slug]': {
-      key: 'articles.articleDetails',
-      authority: ['admin', 'user'],
-      meta: {
-        pageContainerType: 'contained',
+      '/articles/[slug]': {
+        key: 'articles.articleDetails',
+        authority: ['admin', 'user'],
+        meta: {
+          pageContainerType: 'contained',
+        },
+        dynamicRoute: true,
       },
-      dynamicRoute: true,
-    },
-  }
-  ```
-  - key : 라우트 식별자 (네비게이션 메뉴랑 매칭용)
-  - authority : 접근 가능한 역할 (RBAC, Role-Based Access Control)
-    - `['admin', 'user']` -> 관리자와 일반 유저만 접근
-    - `[]` 모든 권한 가능
-  - meta : 페이지 레이아웃/헤더/푸터 등 부가 설정
-  - dynamicRoute : `true`면 동적 라우트 (`/articles/[slug]`)
-
-- Meta 속성 정리
-  ```tsx
-  meta: {
-    pageContainerType: 'gutter',   // 'default' | 'gutterless' | 'contained'
-    pageBackgroundType: 'plain',   // 'default' | 'plain'
-    header: {
-      title: 'My title',
-      description: 'Some description',
-      contained: false,
-      extraHeader: lazy(() => import('@/components/SomeComponent')),
-    },
-    footer: false,                 // 기본 true, false면 안 보여줌
-    layout: 'blank',               // 레이아웃 override
-  }
-  ```
-  - pageContainerType : 화면 레이아웃 여백 스타일
-  - pageBackGroundType : 배경 스타일
-  - header : 페이지 상단 헤더 설정 (타이틀, 설명, extraHeader)
-  - footer : 푸터 표시 여부
-  - layout : 페이지별 레이아웃 지정 (사이드바, 탑바 등)
-### 결론
-  - 기존 JSP에서 controller + interceptor + tiles layout 조합으로 페이지마다 권한이랑 레이아웃 다르게 준거랑 비슷한거같음 Next.js는 기본 라우팅은 단순이 경로만 연결해주는데, Ecme 라우팅 설정을 따르면 각 뚫려있는 경로에 권한,레이아웃,메타데이터까지 한방에 다 처리가 가능한거인듯 ㄹㅇ 쌉편하네 근데 생각보다 신경써야할게 엄청 많구나
+    }
+    ```
+    - key : 라우트 식별자 (네비게이션 메뉴랑 매칭용)
+    - authority : 접근 가능한 역할 (RBAC, Role-Based Access Control)
+      - `['admin', 'user']` -> 관리자와 일반 유저만 접근
+      - `[]` 모든 권한 가능
+    - meta : 페이지 레이아웃/헤더/푸터 등 부가 설정
+    - dynamicRoute : `true`면 동적 라우트 (`/articles/[slug]`)
+  - Meta 속성 정리
+    ```tsx
+    meta: {
+      pageContainerType: 'gutter',   // 'default' | 'gutterless' | 'contained'
+      pageBackgroundType: 'plain',   // 'default' | 'plain'
+      header: {
+        title: 'My title',
+        description: 'Some description',
+        contained: false,
+        extraHeader: lazy(() => import('@/components/SomeComponent')),
+      },
+      footer: false,                 // 기본 true, false면 안 보여줌
+      layout: 'blank',               // 레이아웃 override
+    }
+    ```
+    - pageContainerType : 화면 레이아웃 여백 스타일
+    - pageBackGroundType : 배경 스타일
+    - header : 페이지 상단 헤더 설정 (타이틀, 설명, extraHeader)
+    - footer : 푸터 표시 여부
+    - layout : 페이지별 레이아웃 지정 (사이드바, 탑바 등)
+  ### 결론
+    - 기존 JSP에서 controller + interceptor + tiles layout 조합으로 페이지마다 권한이랑 레이아웃 다르게 준거랑 비슷한거같음 Next.js는 기본 라우팅은 단순이 경로만 연결해주는데, Ecme 라우팅 설정을 따르면 각 뚫려있는 경로에 권한,레이아웃,메타데이터까지 한방에 다 처리가 가능한거인듯 ㄹㅇ 쌉편하네 근데 생각보다 신경써야할게 엄청 많구나
 
 ## Create New Page
-- 페이지 위치 정하기
-  - `src/app/(protected-pages)` -> 로그인 필요
-    - 마이페이지, 대시보드 등
-  - `src/app/(public-pages)` -> 누구나 접근 가능
-    - 회사소개, 공고리스트 등
+  - 페이지 위치 정하기
+    - `src/app/(protected-pages)` -> 로그인 필요
+      - 마이페이지, 대시보드 등
+    - `src/app/(public-pages)` -> 누구나 접근 가능
+      - 회사소개, 공고리스트 등
 
-- 파일 생성
-  - 정적 라우트 : `src/app/new-page/page.tsx` -> `/new-page`
-  - 동적 라우트 : `src/app/new-page/[id]/page.tsx` -> `/new-page/123`
+  - 파일 생성
+    - 정적 라우트 : `src/app/new-page/page.tsx` -> `/new-page`
+    - 동적 라우트 : `src/app/new-page/[id]/page.tsx` -> `/new-page/123`
 
-- 신규 페이지 컴포넌트 작성
-  ```tsx
-  const Page = () => {
-      return (
-          <div>
-              <h1>Welcome to the New Page</h1>
-              <p>This is a custom page.</p>
-          </div>
-      );
-  };
+  - 신규 페이지 컴포넌트 작성
+    ```tsx
+    const Page = () => {
+        return (
+            <div>
+                <h1>Welcome to the New Page</h1>
+                <p>This is a custom page.</p>
+            </div>
+        );
+    };
 
-  export default Page;
-  ```
+    export default Page;
+    ```
+  - 라우팅 설정 추가
+    - `src/configs/routes.config/index.js` 수정 -> 접근권한 / 메타데이터 붙이기
+    ```ts
+    import { ADMIN, USER } from '@/constants/roles';
 
-- 라우팅 설정 추가
-  - `src/configs/routes.config/index.js` 수정 -> 접근권한 / 메타데이터 붙이기
-  ```ts
-  import { ADMIN, USER } from '@/constants/roles';
+    export const protectedRoutes = {
+        ...protectedRoutes,
+        '/new-page': {
+            key: 'newPage',
+            authority: [ADMIN, USER],
+            meta: {
+                pageContainerType: 'contained',
+            },
+        },
+    };
+    ```
+    - key : 네비게이션 매칭용 식별자
+    - authority : 접근 권한 ([`ADMIN, USER`])
+    - meta : 레이아웃 및 헤더/푸터 설정
+  - Client Component 분리 (SSR 최적화)
+    - Next.js App Router에서는 페이지 파일을 서버 컴포넌트를 두고, 클라이언트 로직은 따로 분리하는게 베스트 프랙티스
+    ```tsx
+    // src/app/(protected-pages)/new-page/page.tsx
+    import ClientComponent from './_components/ClientComponent';
 
-  export const protectedRoutes = {
-      ...protectedRoutes,
-      '/new-page': {
-          key: 'newPage',
-          authority: [ADMIN, USER],
-          meta: {
-              pageContainerType: 'contained',
-          },
-      },
-  };
-  ```
-  - key : 네비게이션 매칭용 식별자
-  - authority : 접근 권한 ([`ADMIN, USER`])
-  - meta : 레이아웃 및 헤더/푸터 설정
+    const NewPage = () => {
+        return (
+            <div>
+                <h1>New Page</h1>
+                <ClientComponent />
+            </div>
+        );
+    };
 
-- Client Component 분리 (SSR 최적화)
-  - Next.js App Router에서는 페이지 파일을 서버 컴포넌트를 두고, 클라이언트 로직은 따로 분리하는게 베스트 프랙티스
-  ```tsx
-  // src/app/(protected-pages)/new-page/page.tsx
-  import ClientComponent from './_components/ClientComponent';
+    export default NewPage;
 
-  const NewPage = () => {
-      return (
-          <div>
-              <h1>New Page</h1>
-              <ClientComponent />
-          </div>
-      );
-  };
+    // src/app/(protected-pages)/new-page/_components/ClientComponent.tsx
+    'use client';
 
-  export default NewPage;
+    const ClientComponent = () => {
+        return <p>This component runs on the client.</p>;
+    };
 
-  // src/app/(protected-pages)/new-page/_components/ClientComponent.tsx
-  'use client';
+    export default ClientComponent;
+    ```
+    - 디렉토리에 `page.tsx` 만들면 곧바로 라우트 됨 (Next.js 기본)
+    - Ecme 는 `routes.config`에 권한/메타까지 한번에 묶어서 관리 가능
+    - 클라이언트 로직은 별도 컴포넌트 분리하면 SSR + CSR 깔끔 분리 가능
+  ### 결론
+    - 결국 내가 개발했던 환경에서는 화면별로 다 컨트롤러 작성해서 리다이렉션을 하고, SEO를 고려해서 메타데이터나 이미지파일을 생각하면서 구성하면서 가져오고, 어떤 화면에 접근할려면 로그인 여부/권한, 해당 접근가능한 id 체크 등 여러 로직을 집어넣어야 했는데 Next.js는 SSR, CSR 분리로 인해 화면을 분리해서 클라이언트에서 화면을 내려주기 때문에 SEO에서도 강력, 사용자 로딩면에서도 강력크하다. 그리고 `routes.config.ts`에 이미 메타데이터나 권한, 여러 조건들을 모아놓고 작성하기 때문에 화면별로 어떤 권한인지, 뭔지 파악하기 쉽고, 관리하기도 강려크하다. Next.js 짱짱
+    ++ 이미지도 자동최적화 준다네.. 크흐...
 
-  const ClientComponent = () => {
-      return <p>This component runs on the client.</p>;
-  };
+## API Integration
+  - Next.js API Routes 특징
+    - 파일 기반 라우팅
+      - `/app/api/` 디렉토리 안에 파일을 만들면 자동으로 API 엔드포인트가 됨
+        - `src/app/api/hello/route.ts` -> `/api/hello`
+      - req / res (Node.js 스타일)
+        - `Request` 객체에서 body, query 등 파싱
+        - `NextResponse`로 JSON 반환
+      - 서버 전용 실행 (SSR)
+        - DB접근, 인증로직, 외부 API 연동 등 보안에 필요한 로직을 안전하게 처리 가능
+  - 예시: 간단한 API Route
+    ```ts
+    // src/app/api/hello/route.ts
+    import { NextResponse } from 'next/server';
 
-  export default ClientComponent;
-  ```
+    const mockMethodThatSavesToDatabase = async (data: any) => {
+        console.log('Data saved to database:', data);
+    };
 
-  - 디렉토리에 `page.tsx` 만들면 곧바로 라우트 됨 (Next.js 기본)
-  - Ecme 는 `routes.config`에 권한/메타까지 한번에 묶어서 관리 가능
-  - 클라이언트 로직은 별도 컴포넌트 분리하면 SSR + CSR 깔끔 분리 가능
-### 결론
-  - 결국 내가 개발했던 환경에서는 화면별로 다 컨트롤러 작성해서 리다이렉션을 하고, SEO를 고려해서 메타데이터나 이미지파일을 생각하면서 구성하면서 가져오고, 어떤 화면에 접근할려면 로그인 여부/권한, 해당 접근가능한 id 체크 등 여러 로직을 집어넣어야 했는데 Next.js는 SSR, CSR 분리로 인해 화면을 분리해서 클라이언트에서 화면을 내려주기 때문에 SEO에서도 강력, 사용자 로딩면에서도 강력크하다. 그리고 `routes.config.ts`에 이미 메타데이터나 권한, 여러 조건들을 모아놓고 작성하기 때문에 화면별로 어떤 권한인지, 뭔지 파악하기 쉽고, 관리하기도 강려크하다. Next.js 짱짱
-  ++ 이미지도 자동최적화 준다네.. 크흐...
+    export async function POST(request: Request) {
+        try {
+            const externalApiResponse = await fetch('https://jsonplaceholder.typicode.com/posts/1');
+            const externalData = await externalApiResponse.json();
+
+            await mockMethodThatSavesToDatabase(externalData);
+
+            return NextResponse.json({ message: 'Data saved successfully', data: externalData });
+        } catch (error: any) {
+            return NextResponse.json({ error: 'Failed to save data', details: error.message }, { status: 500 });
+        }
+    }
+    ```
+  - Ecme의 ApiService (클아이언트 호출용 래퍼)
+    - Axios 기반 유틸리티 제공
+      - Axios 가 뭐임?
+        - Http 통신 라이브러리 (브라우저 & Node.js 둘 다 지원)
+        - 쉽게 말해서 Ajax의 업그레이드 버전
+        - `fetch` Api도 있지만, `axios`는 그걸 더 편하게 쓰게 해주는 라이브러리
+
+        - 기본 fetch
+        ```ts
+        // fetch 사용
+        const resp = await fetch('/api/hello', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: '형' })
+        });
+        const data = await resp.json();
+        ```
+
+        - axios 사용
+        ```ts
+        import axios from 'axios';
+
+        const resp = await axios.post('/api/hello', { name: '형' });
+        console.log(resp.data);
+        ```
+        - 차이점
+          - `fetch`는 `.json()` 같은 파싱을 직접 해야함
+          - `axios`는 자동으로 파싱 (`resp.data`)
+          - 에러 처리, 인터셉터, 토큰 헤더 붙이기 같은 고급 기능이 훨씬 편함
+
+        - Ecme에서 말한 Axios 기반 유틸리티 
+          - Ecme는 ApiService 라는걸 만들어서 
+            - axios를 한번 감싸고 (wrapper)
+            - 에러 처리, 응답 포맷 형식
+            - JWT 토큰 자동 붙이기 등 공통 로직 처리 등등
+          - 같은것을 처리 해놓음
+            - JSP/서블릿에서 쓰는 HttpClient 유틸 같은거 인듯
+            ```java
+            // 자바 예시 (형식만 비슷하게)
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest req = HttpRequest.newBuilder()
+                .uri(URI.create("/api/hello"))
+                .POST(HttpRequest.BodyPublishers.ofString("{\"name\":\"형\"}"))
+                .build();
+            HttpResponse<String> resp = client.send(req, BodyHandlers.ofString());
+            ```
+            - 이런 형식 포맷인데, axios는 개 깔끔함 
+            - 정리
+              - axios = HTTP 통신을 더 쉽게 해주는 JS 라이브러리
+              - Ecme는 axios를 감싼 ApiService를 제공해서
+                - 모든 API 호출이 일정한 포맷으로 관리
+                - try/catch, 응답 구조, 에러 전부 통일됨
+              - `fetch`
+                - 브라우저에 기본 내장된 Ajax 기능 (JS 표준 API)
+              - `axios`
+                - `fetch`를 더 쓰기 편하고 강력하게 만든 외부 라이브러리
+              - ajax 랑 비슷한건데, JS 기본 도구가 `fetch`이고, 실무에서는 `axios`를 이용해서 사용함
+                - 기존에 포유잡은 HNttpsServletRequest / Response 같은걸 직접 쓰면서 개 귀찮았는데, `RestTemplate` 같은걸 쓰면 개편해짐
+              - 결국 정해진 규격이 있으니까, 사용법을 이해하고, 어떤식으로 던지는데, 어떤식으로 받는지, 어떤걸 체크해야하는지를 파악해야함
+    - 공통된 에러 처리 / 응답 파싱 로직을 자동화
+      - 이게 아마 이런 툴과 외부 라이브러리를 쓰는 이유 중 하나 인듯
+    - 제네릭 타입(`Response`, `Request`)으로 타입 안전성 확보
+    - 서비스 예시
+    ```ts
+    // services/UserManagementService.ts
+    import ApiService from './ApiService';
+
+    type MyApiResponse = {
+        someResponseData: string
+        someResponseData2: boolean
+    };
+
+    type MyApiRequest = {
+        someRequestData: string
+    };
+
+    export async function myApi(data: MyApiRequest) {
+        return ApiService.fetchData<MyApiResponse, MyApiRequest>({
+            url: '/my-api-url',
+            method: 'post',
+            data
+        });
+    }
+    ```
+    -- 컴포넌트에서 활용
+    ```tsx
+    import { myApi } from '@/services/UserManagementService';
+    import { useEffect } from 'react';
+
+    const MyComponent = () => {
+        const fetchData = async () => {
+            try {
+                const resp = await myApi({ someRequestData: 'hello' });
+                if (resp.data) {
+                    console.log(resp.data.someResponseData);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        useEffect(() => {
+            fetchData();
+        }, []);
+
+        return <div>My Component</div>;
+    };
+    ```
+    - 추가적으로
+      - 더 고급스럽게 하려면 SWR 또는 TanStack Query 같은 데이터 패칭 라이브러리랑 붙여서 캐싱 / 리페치 처리 가능
+      - 결국 구조는
+        - Next.js API Route -> 서버 전용 로직
+        - ApiService -> 프론트 공통 Axios Wrapper
+        - 컴포넌트 -> 서비스 함수 호출
+    - 기존에 JSP/서블릿에서 하던 Controller -> Service -> DAO 구조랑 비슷한데,
+      - Controller = `Next.js API Route`
+      - Service = `ApiService 래퍼 + 서비스 함수`
+      - View = `해당 컴포넌트`
+  ### 결론
+    - 솔직히 글로만 읽었을때는 ??? 뭐징 뭐가 어떻게 된다는거지?! 했는데, Ajax라고 생각하고 접근하니까 이해가 가기 시작했음. 결국에 Service 딴에서 활용하는 axios를 활용해서 주고받기 때문에 조금 더 규격화 되고, TyprSciprt 인 만큼 강점이 더욱 더 될거라고 생각함. 물론. 아직 입으로만 털수 있음 ㅎㅎ ㅠ...
