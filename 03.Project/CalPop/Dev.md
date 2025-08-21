@@ -1195,8 +1195,225 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
 
     export default navigationIcon
     ```
-  ## 결론
+  ### 결론
     원래는 별도에 JSP를 호출해서, 파라미터나 식별자로 인해서 아이콘, 이름을 가져다가 썼는데, 여긴 별도로 아예 네비게이션 관리 딴이 있기 때문에 추가 및 관리 하기가 엄청 편할것 같음 매핑형식이라서 틀만 따라서 관리해도 이슈가 없을 것 같음
     - navigation.config.ts → 메뉴 트리 구조만 정의
     - navigation-icon.config.tsx → 아이콘 매핑만 관리
     - 권한(authority), 다국어(translateKey), 레이아웃(meta) → 전부 옵션으로 붙일 수 있음
+
+## Theming
+  - CSS variables로 기본 테마 정의
+    - `assets/styles/tailwend/index.css`에 라이트/다크 공통 변수를 정의
+    - `:root` -> 라이트 모드 기본값
+    - `.dark` -> 다크 모드 값
+    - 이렇게 하면 Tailwind나 커스텀 CSS에서 `var(--primary)` 이런 식으로 불러다 쓸 수 있음
+  - TypeScript Theme Schaema 설정
+    - `theme.config.ts`에 타입과 테마 스키마 정의
+    - `Variables` -> 관리할 컬러 변수 키
+    - `ThemeVariables` -> 라이트/다크 모드별 변수 값 구조
+    ```ts
+    export type Variables = "primary" | "primaryDeep" | "primaryMild" | "primarySubtle" | "neutral"
+    export type ThemeVariables = Record<"light" | "dark", Record<Variables, string>>
+    ```
+    - 기본 테마와 커스텀 테마 예시를 만들어서 `presetThemeSchemaConfig`에 등록 해놓음
+  - Theme Switcher 컴포넌트
+    - `userTheme` 훅으로 현재 테마 스키마와 모드 상태를 가져옴
+    - `Object.entries(parsetThemeSchemaConfig)`를 돌면서 버튼 UI로 테마 선택
+    - 선택된 테마는 `setSchema(key)`로 업데이트
+    ```tsx
+    <button
+      key={key}
+      className={classNames(
+        'h-8 w-8 rounded-full flex items-center justify-center border-2 border-white',
+        schema === key && 'ring-2 ring-primary',
+      )}
+      style={{ backgroundColor: value[mode].primary }}
+      onClick={() => setSchema(key)}
+    >
+      {schema === key && <TbCheck className="text-neutral text-lg" />}
+    </button>
+    ```
+  - 확장 포인트
+    - 템플릿에서는 `primary` 계열이랑 `neutral`만 있지만, 필요하다면 `error`, `warning`, `success` 등도 `Variables` 타입에 추가해서 확장 가능
+    - Tailwind theme 확장(`tailwiund.config.js`)와 연결하면 더 깔끔하게 `bg-primary`, `text-error` 이런 식으로 바로 쓸 수도 있음
+  ### 결론
+    템플릿 구조로면 CSS 변수로 런타임 테마 변경 + TypeScript로 안전하게 관리 수정할 수 있고, UI 스위치 제공까지 다 커버 가능하다는 거 같음 Next.js 자체가 모듈 단위로 찢어서 하나씩 만들어서 관리하는거라고 했으니까, CSS도 비슷하게 생각하면 될듯
+
+## Internationalization (i18n)
+  - 기본 개념
+    - 라이브러리 : `next-intl` 사용
+    - 구성 : 두 가지 방식 제공
+      - 1. Without i18n Routing(기본) -> URL 구조 변경 없음 (`/about`)
+      - 2. With i18n Routing -> 언어 prefix/domain 기반 (`/en/about`, `en.example.com`)
+    - 네비게이션 번역 활성화 
+      - `src/configs/app.config.ts`
+      ```ts
+      export type AppConfig = {
+          apiPrefix: string
+          authenticatedEntryPath: string
+          unAuthenticatedEntryPath: string
+          locale: string
+          activeNavTranslation: boolean
+      }
+
+      const appConfig: AppConfig = {
+          apiPrefix: '/api',
+          authenticatedEntryPath: '/home',
+          unAuthenticatedEntryPath: '/sign-in',
+          locale: 'en',
+          activeNavTranslation: false,
+      }
+
+      export default appConfig
+      ```
+    - Without i18n Routing (기본)
+      - messages 폴더 구조
+      ```pgsql
+      messages/
+      ├── en.json
+      ├── es.json
+      └── fr.json
+      ```
+    - 번역 JSON 예시
+    ```json
+    // messages/en.json
+    { "title": "Home" }
+
+    // messages/es.json
+    { "title": "Inicio" }
+    ```
+  - 루트 레이아웃에 Provider 적용 (`src/app/layout.tsx`)
+  ```tsx
+  import LocaleProvider from "@/components/template/LocaleProvider"
+  import { getLocale, getMessages } from "next-intl/server"
+
+  export default async function RootLayout({ children }: { children: ReactNode }) {
+    const locale = await getLocale()
+    const messages = await getMessages()
+
+    return (
+      <html suppressHydrationWarning>
+        <body suppressHydrationWarning>
+          <LocaleProvider locale={locale} messages={messages}>
+            <ThemeProvider locale={locale} theme={theme}>
+              {children}
+            </ThemeProvider>
+          </LocaleProvider>
+        </body>
+      </html>
+    )
+  }
+  ```
+  - 컴포넌트에서 번역 사용
+  ```tsx
+  import { useTranslations } from "next-intl"
+
+  export default function HomePage() {
+    const t = useTranslations()
+    return <h1>{t("title")}</h1>
+  }
+  ```
+  - With i18n Routing
+    - 언어별 경로 사용 가능
+      - Prefix: `/en/about`, `fr/about`
+      - Domain: `en.example.com`
+    - 구조와 설정이 더 복잡함 -> 공식 문서 참고랑 구글링 해봐야할듯
+  - 언어 변경 (Without i19n Routing)
+    - `userTranslation`의 i18n 객체 활용
+    - 서버 액션 `setLocale` 호출 예시
+    ```tsx
+    'use client'
+
+    import { setLocale } from '@/server/actions/locale'
+
+    const Component = () => {
+      const handleUpdateLocale = async (locale: string) => {
+        await setLocale(locale)
+      }
+
+      return (
+        <button onClick={() => handleUpdateLocale('fr')}>
+          Change language
+        </button>
+      )
+    }
+
+    export default Component
+    ```
+  - 기본 언어 설정
+    - `src/configs/app.config.ts`
+    ```ts
+    export const appConfig: AppConfig = {
+        ...
+        locale: 'fr'
+    }
+    ```
+  - 새로운 언어 추가
+    - 1. message 폴더에 JSON 생성
+    ```json
+    // messages/fr.json
+    {
+      "HomePage": {
+        "title": "Bonjour le monde!",
+        "about": "Aller à la page à propos"
+      }
+    }
+    ```
+    - 2. `src/i18n/dateLocales.ts`에 등록
+    ```ts
+    export const dateLocales: {
+      [key: string]: () => Promise<ILocale>
+    } = {
+      ...
+      fr: () => import('dayjs/locale/fr'),
+    }
+    ```
+    - 3. (i18n Routing 사용 시) -> 라우팅 설정 & middleware에도 추가 필요
+  ### 결론
+    간단하게 사용하는건 Without i18n Routing -> message JSON 관리 + Provider 래핑 이고, 글로벌 서비스면 With i18n Routing 경로 기반에 다국어 URL 셋팅을 해서 쓰는것 같음 내가 했던건 설정에서 언어 설정에서 선택된 언어로 전면 바꾸는건데, 아예 언어를 셋팅해서 관리하면 더 편할듯
+
+## Dark / Light Mode
+  - 초기 모드 설정
+    - `src/configs/theme.config.ts` 에서 `mode` 필드 값 지정
+    ```ts
+    export const themeConfig = {
+        ...
+        mode: 'dark' // or 'light'
+        // Demo - mode: THEME_ENUM.MODE_LIGHT,
+    }
+    ```
+  - Hook 사용
+    - `userTheme` 훅으로 현재 모드 가져오기 + 업데이트 기능
+    - `Switcher` UI 컴포넌트와 연결해서 토글 구현
+    ```tsx
+    'use client'
+
+    import useTheme from '@/utils/hooks/useTheme'
+    import Switcher from '@/components/ui/Switcher'
+
+    const ModeSwitcher = () => {
+        const mode = useTheme((state) => state.mode)
+        const setMode = useTheme((state) => state.setMode)
+
+        const onSwitchChange = (checked: boolean) => {
+            setMode(checked ? 'dark' : 'light')
+        }
+        
+        return (
+            <div>
+                <Switcher
+                    defaultChecked={mode === 'dark'}
+                    onChange={onSwitchChange}
+                />
+            </div>
+        )
+    }
+
+    export default ModeSwitcher
+    ```
+    - 동작 방식
+      - `Switcher`에서 true/false를 받아 -> `userTheme`의 `setMode` 호출
+      - `mode`값이 `dark`로 바뀌면 `body` 나 `html`에 `.dark` 클래스 적용됨
+      - CSS 변수 (`--primary`, `--neutral` 등) 값도 `.dark`에서 정의된 값으로 자동 전환됨
+  ### 결론
+    theme.config.ts 가 뭐 거의 모든 초기설정을 물고 있는거같고, userTheme 훅이랑 Switcher로 런타임 다크/라이트 전환 가능하고, 기존에 CSS 구조 덕분에 모든게 다 색상이랑 스타일이 맞춰지는것 같음 와 이거 UI 담당자분들 개머리 아프겠네...
