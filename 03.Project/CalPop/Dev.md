@@ -101,7 +101,6 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
                             ```tsx
                             const Hemllo = () => <div>Hello</div>;
                             ```
-                        ---
                         - 내가 익숙한 JSP랑 비교하면?
                           - JSP
                             - HTML 문서 안에 Java 코드를 섞어서 서버에서 실행 후 결과 HTML을 만들어 클라이언트에 넣어줌 
@@ -117,7 +116,6 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
                               ```tsx
                               const Hello = ({ user}) => <div>Hello, {user.name}</div>;
                               ```
-                          ---
                           - 차이 포인트
                             - 실행 위치
                               - JSP : 서버에서 실행 
@@ -242,7 +240,7 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
             - 버튼 스타일은 `ui/Button` 하나로 통일
             - 로그인/회원가입 마다 새 버튼을 만드는게 아니라 shared 레벨에서 변형
             - 최종 페이지에서는 shared 컴포넌트만 조립
-          - 아 내가사용했던 방식은 <div><button> 처럼 하나씩 다 생성하고, 텍스트에 뭐에 뭐에 다 해서 뭐 하나 이슈생겨서 변경할려면 이곳저곳 돌아다니면서 수정해야되는데, Next.js는 해당 테마의 ui 폴더로부터 쭉쭉 내려와서 shared 폴더에서 한번 가공하고, 다 만들면 auth 폴더에 넣고 패키징 해서 그걸 화면에서 오 이건가!? 하고 뽁 쓰니까, 수정하기도 편하겠네
+          - 아 내가사용했던 방식은 `<div>`, `<button>` 처럼 하나씩 다 생성하고, 텍스트에 뭐에 뭐에 다 해서 뭐 하나 이슈생겨서 변경할려면 이곳저곳 돌아다니면서 수정해야되는데, Next.js는 해당 테마의 ui 폴더로부터 쭉쭉 내려와서 shared 폴더에서 한번 가공하고, 다 만들면 auth 폴더에 넣고 패키징 해서 그걸 화면에서 오 이건가!? 하고 뽁 쓰니까, 수정하기도 편하겠네
       - `configs/`
         - AppConfig, ThemeConfig 같은 설정
           - 여기에 .ts에 뭐 타입 설정이라든가, 템플렛에 설정이라든가 이런것들이 다 들어가있는거같음
@@ -464,7 +462,7 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
           - 요청할때 가로채서 뭔가 처리하는 역할
             - 클럽 앞에 문지기 역할
   ### 결론
-  - 디렉토리 짱 많다... 필요할때 문서를 참고하면서 찾아보면서 해야할듯
+    디렉토리 짱 많다... 필요할때 문서를 참고하면서 찾아보면서 해야할듯
 
 ## Routing
   - Next.js 기본 라우팅
@@ -535,7 +533,7 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
     - footer : 푸터 표시 여부
     - layout : 페이지별 레이아웃 지정 (사이드바, 탑바 등)
   ### 결론
-    - 기존 JSP에서 controller + interceptor + tiles layout 조합으로 페이지마다 권한이랑 레이아웃 다르게 준거랑 비슷한거같음 Next.js는 기본 라우팅은 단순이 경로만 연결해주는데, Ecme 라우팅 설정을 따르면 각 뚫려있는 경로에 권한,레이아웃,메타데이터까지 한방에 다 처리가 가능한거인듯 ㄹㅇ 쌉편하네 근데 생각보다 신경써야할게 엄청 많구나
+    기존 JSP에서 controller + interceptor + tiles layout 조합으로 페이지마다 권한이랑 레이아웃 다르게 준거랑 비슷한거같음 Next.js는 기본 라우팅은 단순이 경로만 연결해주는데, Ecme 라우팅 설정을 따르면 각 뚫려있는 경로에 권한,레이아웃,메타데이터까지 한방에 다 처리가 가능한거인듯 ㄹㅇ 쌉편하네 근데 생각보다 신경써야할게 엄청 많구나
 
 ## Create New Page
   - 페이지 위치 정하기
@@ -610,7 +608,7 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
     - Ecme 는 `routes.config`에 권한/메타까지 한번에 묶어서 관리 가능
     - 클라이언트 로직은 별도 컴포넌트 분리하면 SSR + CSR 깔끔 분리 가능
   ### 결론
-    - 결국 내가 개발했던 환경에서는 화면별로 다 컨트롤러 작성해서 리다이렉션을 하고, SEO를 고려해서 메타데이터나 이미지파일을 생각하면서 구성하면서 가져오고, 어떤 화면에 접근할려면 로그인 여부/권한, 해당 접근가능한 id 체크 등 여러 로직을 집어넣어야 했는데 Next.js는 SSR, CSR 분리로 인해 화면을 분리해서 클라이언트에서 화면을 내려주기 때문에 SEO에서도 강력, 사용자 로딩면에서도 강력크하다. 그리고 `routes.config.ts`에 이미 메타데이터나 권한, 여러 조건들을 모아놓고 작성하기 때문에 화면별로 어떤 권한인지, 뭔지 파악하기 쉽고, 관리하기도 강려크하다. Next.js 짱짱
+    결국 내가 개발했던 환경에서는 화면별로 다 컨트롤러 작성해서 리다이렉션을 하고, SEO를 고려해서 메타데이터나 이미지파일을 생각하면서 구성하면서 가져오고, 어떤 화면에 접근할려면 로그인 여부/권한, 해당 접근가능한 id 체크 등 여러 로직을 집어넣어야 했는데 Next.js는 SSR, CSR 분리로 인해 화면을 분리해서 클라이언트에서 화면을 내려주기 때문에 SEO에서도 강력, 사용자 로딩면에서도 강력크하다. 그리고 `routes.config.ts`에 이미 메타데이터나 권한, 여러 조건들을 모아놓고 작성하기 때문에 화면별로 어떤 권한인지, 뭔지 파악하기 쉽고, 관리하기도 강려크하다. Next.js 짱짱
     ++ 이미지도 자동최적화 준다네.. 크흐...
 
 ## API Integration
@@ -765,3 +763,440 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
       - View = `해당 컴포넌트`
   ### 결론
     - 솔직히 글로만 읽었을때는 ??? 뭐징 뭐가 어떻게 된다는거지?! 했는데, Ajax라고 생각하고 접근하니까 이해가 가기 시작했음. 결국에 Service 딴에서 활용하는 axios를 활용해서 주고받기 때문에 조금 더 규격화 되고, TyprSciprt 인 만큼 강점이 더욱 더 될거라고 생각함. 물론. 아직 입으로만 털수 있음 ㅎㅎ ㅠ...
+
+## Authentication
+  - 기본 개념
+    - NextAuth.js 
+      - Next.js에서 쓰는 표준 인증 라이브러리
+    - 지원
+      - OAuth (구글, 깃허브 등), Credentials(커스텀), 이메일 링크 등
+    - 보안
+      - 세션 토큰 암호화, 환경변수 기반 설정
+    - 위치
+      - `src/configs/auth.config.ts`에서 중앙 관리
+  - 환경변수 설정
+    ```env
+    AUTH_SECRET=랜덤한_문자열
+    NEXTAUTH_URL=http://localhost:3000
+
+    GOOGLE_AUTH_CLIENT_ID=xxxx
+    GOOGLE_AUTH_CLIENT_SECRET=xxxx
+    GITHUB_AUTH_CLIENT_ID=xxxx
+    GITHUB_AUTH_CLIENT_SECRET=xxxx
+    ```  
+    - `AUTH_SECRET`
+      - 세션 토큰 암호화
+    - `NEXTAUTH_URL`
+      - 콜백 리다이렉트용 (운영 배포 시 도메인으로 교체)
+    - `*_CLIENT_ID, *_CLIENT_SECRET`
+      - OAuth Provider 자격증명
+    
+  - Providers 설정
+    - (1) Credentials Provider (커스텀 로그인)
+      ```ts
+      Credentails({
+        async authorize(credentials) {
+          const user = await validateCredential(credentials as SingInCredential);
+          if (!user) return null;
+
+          return {
+            id: user.id,
+            name: user.userName,
+            email: user.email,
+            image: user.avatar,
+          };
+        },
+      })
+      ```
+      - `validateCredential()` -> DB 조회 or API 호출
+      - 성공 시 `user` 객체 반환 -> 세션에 저장됨
+    - (2) OAuth Provider (구글, 깃허브)
+      ```ts
+      Google({
+        clientId: process.env.GOOGLE_AUTO_CLIENT_ID!,
+        clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET!,
+      }),
+      Github({
+        clientId: process.env.GITHUB_AUTO_CLIENT_ID!,
+        clientSecret: process.env.GITHUB_AUTO_CLIENT_SECRET!,
+      })
+      ```
+    - Callback 확장 (세션에 커스텀 속성 추가)
+      ```ts
+      callbacks: {
+        async session(payload) {
+          return {
+            ...payload.session,
+            user: {
+              ...payload.session.user,
+              id: payload.token.sub,
+              authority: ['admin', 'user'], // 예시
+            }
+          }
+        }
+      }
+      ```
+      - 이렇게 하면 session.user 안에 추가 필드 (`id`, `authority`) 를 붙일 수 있음
+  - 클라이언트/서버에서 세션 접근
+    - (1) 클라이언트
+      ```tsx
+      import userCurrentSession from '@/utils/hooks/userCurrentSession';
+
+      const Component = () => {
+        const { session } = userCurrentSession();
+
+        return session ? (
+          <h1> Welcome {session.user.name}</h1>
+        ) : (
+          <p>You are not logged in. </p>
+        );
+      };
+      ```
+    - (2) 서버
+    ```ts
+    import { auth } from "@/auth";
+
+    export default async function Page() {
+      const session = await auth();
+
+      if (!session) return <p>You must be logged in</p>;
+      return <h1>Welcome {ssion.user.name}</h1>
+    }
+    ```
+    - SSR 환경에서 세션 확인 가능
+      - 인증된 사용자만 접근 가능하도록 처리
+  - NextAuth 제거 방법
+    - 1. `npm uninstall next-auth`
+    - 2. `src/configs/auth.config.ts` 삭제
+    - 3. `pages/api/auth/[...nextauth].ts` 삭제
+    - 4. `middleware.ts` 초기화/삭제
+    - 5. 컴포넌트 내 `auth()`, `userCurrentSession()` 호출부 제거
+      - 예: `layout.tsx`, `UserProfileDropdown.tsx` 등
+    - * 이렇게 하면 다른 인증 방식으로 교체 가능
+  ### 결론
+    나한테는 너무 어렵게 적혀있는데, 결국에는 Next.js에서 권한관리, 세션관리를 한방에 다 이렇게 한다. 이런거같음, 전에는 세션관리나 권한관리 등은 전부 따로 관리 했어야하는데, 이렇게 라이브러리로 프로젝트 자체에서 관리하니까 훨씬 수월하고 개발/유지보수 차원에서도 엄청날듯
+
+## State management
+  - Zustand가 뭐냐?
+    - React에서 전역 상태 관리를 하는 작고 빠른 라이브러리
+    - Redux처럼 복잡한 보일러플레이트 코드 없이, 가볍게 전역 상태를 다룰 수 있음
+    - React의 기본 `useState`, `userReducer` 보다 스케일 키우기 쉽고, 유지보수도 간단
+  - 코드 흐름
+    - 스토어 정의
+    ```ts
+    const userCountesStore = create ((set) => ({
+      count: 0,
+      increaseCount: () => set((state) => ({ count: state.count + 1 })),
+      decreaseCount: () => set((state) => ({ count: state.count - 1 })),
+    }))
+    ```
+    - `count`라는 전역 상태와 `increaseCount`, `decreaseCount`라는 액션의 정의
+  - 컴포넌트에서 사용
+  ```tsx
+  const { count, increaseCount, decreaseCount } = userCounterStore()
+  ```
+  - 이걸 쓰면 `userState`처럼 값이 바뀔 때 UI가 자동으로 리렌더링 됨
+    - 이게 부분적으로 DOM을 변경하는거구나 ㅇㅇㅇ
+  ### 결론
+    Zustand는 전역 상태관리 라이브러리이면서 Redux는 사용해본적 없지만, 무거운 툴 대신에 가벼운 툴 인거네.
+      - 근데 Redux 라는툴은 괜히 무겁게 된게 아닐텐데 이유가 뭐지?
+        - Redux
+          - `모든 상태는 하나의 전역 Store에 있다` -> 중앙 집중식
+          - 상태 업데이트는 반드시 `Action` -> `Reducer` -> `Store` -> `UI` 순서로 흘러야 함.
+          - 코드 구조가 명확하고 예측 가능하지만, `보일러플레이트 코드(반복코드)`가 많음
+          - 대규모 애플리케이션에 강점.
+          ```tsx
+          // store.ts
+          import { configureStore, createSlice } from '@reduxjs/toolkit';
+
+          const counterSlice = createSlice({
+            name: 'counter',
+            initialState: { count: 0 },
+            reducers: {
+              increment: (state) => { state.count++ },
+              decrement: (state) => { state.count-- },
+            }
+          })
+
+          export const { increment, decrement } = counterSlice.actions;
+          export const store = configureStore({ reducer: { counter: counterSlice.reducer }});
+
+          // Counter.tsx
+          import { useDispatch, useSelector } from 'react-redux';
+          import { increment, decrement } from './store';
+
+          export default function Counter() {
+            const count = useSelector((state: any) => state.counter.count);
+            const dispatch = useDispatch();
+
+            return (
+              <>
+                <h1>{count}</h1>
+                <button onClick={() => dispatch(increment())}>+</button>
+                <button onClick={() => dispatch(decrement())}>-</button>
+              </>
+            );
+          }
+          ```
+        - Zustand
+          - `필요한 만큼의 store만 만들어 쓰자` -> 분산 관리 기능
+          - 그냥 훅처럼 `create()`해서 바로 쓰면 됨
+          - Action, Reducer 같은 형식적 절차 필요 없음 -> 짧고 직관적
+          - 중소규모나 개인 프로젝트에서 특히 빛남, 대규모에서도 충분히 쓰임
+          ```tsx
+          // store.ts
+          import { create } from 'zustand';
+
+          const useCounterStore = create((set) => ({
+            count: 0,
+            increment: () => set((s) => ({ count: s.count + 1 })),
+            decrement: () => set((s) => ({ count: s.count - 1 })),
+          }));
+
+          export default useCounterStore;
+          
+          // Counter.tsx
+          import useCounterStore from './store';
+
+          export default function Counter() {
+            const { count, increment, decrement } = useCounterStore();
+            return (
+              <>
+                <h1>{count}</h1>
+                <button onClick={increment}>+</button>
+                <button onClick={decrement}>-</button>
+              </>
+            );
+          }
+          ```
+        - ㅇㅎ 차이점이 엄청나긴하네 확실히 디버깅, 대규모 프로젝트는 Redux 가 좋은 쪽일거같고, 소규모는 Zustand 가 좋을거같음. 내 프로젝트는 소규모니까 Zustand를 쓰는데, 회사를 대비해서는 Redux도 참고 해야할듯
+
+## App Config
+  ```ts
+  // app.config.ts
+  export type AppConfig = {
+      apiPrefix: string
+      authenticatedEntryPath: string
+      unAuthenticatedEntryPath: string
+      locale: string
+      activeNavTranslation: boolean
+  }
+
+  const appConfig: AppConfig = {
+      apiPrefix: '/api',
+      authenticatedEntryPath: '/home',
+      unAuthenticatedEntryPath: '/sign-in',
+      locale: 'en',
+      activeNavTranslation: false,
+  }
+
+  export default appConfig
+  ```
+  - 앱의 전역 설정값을 관리
+    - `apiPrefix`
+      - 모든 API 요청 앞에 붙는 기본 경로
+        - `apiPrefix = "/api"` -> `fetch("/api/users")` 이런 식으로 호출
+        - 나중에 백엔드 주소 바뀌어도 여기만 바꾸면 됨
+      - `authenticateEntryPath`
+        - 로그인 성공했을 때 유저가 처음 가는 기본 페이지 경로
+        - Demo는 `/dashboards/ecommerce`, Starter는 `/home`
+      - `unAuthenticatedEntryPath`
+        - 로그인이 안 된 유저가 접근하려고 할 때 보내버리는 경로
+          - `/sign-in` (로그인 화면)
+      - `locale`
+        - 앱 기본 언어 `en`
+          - 한국 서비스라면 `ko`
+      - `activeNavTranslation`
+        - 네비게이션 메뉴 다국어 지원 on/off
+  ### 결론
+    말그대로 기본 경로, 기본 전역설정을 하는 부분인거같음
+
+## Layout
+  - Post Logiun Layout (로그인 후 레이아웃)
+    - `src/components/layouts/PostLoginLayout/components/*` 안에서 확인가능
+      - `collapsibleSide` ->  접었다 펼 수 있는 사이드 메뉴
+      - `stackedSide` -> 고정된 사이드 메뉴 (접기 없음)
+      - `topBarClassic` -> 상단 네비게이션 메뉴
+      - `framelessSide` -> 경계선 없는 사이드 메뉴
+      - `contentOPverlay` -> 콘텐츠 위에 오버레이 되는 메뉴
+      - `blank` -> 아무 레이아웃 없는 빈 화면
+    - 기본값은 `theme.config.ts`에서 설정
+      ```ts
+      export const themeConfig = {
+        layout: {
+          type: 'framelessSide', // 여기서 타입 바꿀 수 있음
+        },
+      }
+
+      // theme.config.ts
+      import { THEME_ENUM } from '@/constants/theme.constant'
+      import type { Theme } from '@/@types/theme'
+
+      export const themeConfig: Theme = {
+          themeSchema: '',
+          direction: THEME_ENUM.DIR_LTR,
+          mode: THEME_ENUM.MODE_LIGHT,
+          panelExpand: false,
+          controlSize: 'md',
+          layout: {
+              type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE,
+              sideNavCollapse: false,
+          },
+      }
+      ```
+  - 특정 라우트에서 레이아웃 오버라이드
+    - 전체 앱은 `theme.config.ts` 설정을 따르지만, 특정 페이지는 다르게 줄 수 있음
+    ```ts
+    // 무조건 blank 레이아웃으로 보여주기 
+    export const protectedRoutes = {
+      '/your-page-path': {
+        key: 'keyForYourPage',
+        authority: [ADMIN, USER],
+        meta: {
+          layout: 'blank',
+        },
+      },
+    }
+    ```
+  - Auth Layout (로그인/회원가입 화면)
+    - Auth Layout은 따로 설정해야 함 
+      - 경로 : `src/app/(auth-pages)/layout.tsx`
+      ```tsx
+      import { ReactNode } from 'react'
+      
+      // <!-- 선택 부분 -->
+      import Side from '@/components/layouts/AuthLayout/Side'
+      import Simple from '@/components/layouts/AuthLayout/Simple'
+      // import Split from '@/components/layouts/AuthLayout/Split'
+      // <!-- !선택 부분 -->
+
+      const Layout = ({ children }: { children: ReactNode }) => {
+        return (
+          <div className="flex flex-auto flex-col h-[100vh]">
+            <Simple>
+              {children}
+            </Simple>
+          </div>
+        )
+      }
+
+      export default Layout
+      ```
+      - 여기서 `Side`, `Simple`, `Split` 중 원하는걸로 교체하면 됨
+  ### 결론
+    화면별로 layout 틀을 선정해서 사용하는것 같음. 원래도 import로 인해서 사이드랑 뭐 로그인 부분, 메뉴 부분을 전부 다 수동으로 import 했다면 Next.js는 Layout 별로 그리고 사용하는 틀 별로 뜯어서 수정하고, 호출할 수 있게 관리되는것 같음. 당연히 뷰에서는 통일성이 올라가고, 수정도 쉽고, 관리하기도 좋을듯
+
+## Navigation Config
+  - 네비게이션은 배열(Object 트리 구조) 로 구성 -> `src/configs/navigation.config/index.ts`에 정의
+  - 각 메뉴 아이템은 `NavigationTree` 타입을 따름
+  ```ts
+  export interface NavigationTree {
+      key: string                // 라우트 매칭용 키 (중복 X)
+      path: string               // 이동할 URL
+      isExternalLink?: boolean   // 외부 링크 여부 (true면 새 탭)
+      title: string              // 메뉴에 표시되는 텍스트
+      translateKey: string       // 다국어 번역용 키 (없으면 title 그대로 표시)
+      icon: string               // 아이콘 키 (navigation-icon.config.tsx에 매핑 필요)
+      type: 'title' | 'collapse' | 'item' // 메뉴 종류
+      authority: string[]        // 접근 권한 (ex. ['admin', 'user'])
+      subMenu: NavigationTree[]  // 하위 메뉴
+      description?: string       // (선택) 메뉴 설명
+      meta?: {                   // (선택) 추가 설정
+          horizontalMenu?: HorizontalMenuMeta
+          description?: {
+              translateKey: string
+              label: string
+          }
+      }
+  }
+  ```
+  - Type별 의미
+    - `title` : 구분자(큰 카테고리)
+    - `collapse` : 펼칠 수 있는 그룹 메뉴
+    - `item` : 실제 링크(페이지 이동)
+  - Horizontal Menu 옵션
+  ```ts
+  export type HorizontalMenuMeta =
+    | { layout: 'default' }
+    | { layout: 'columns', showColumnTitle?: boolean, columns: 1 | 2 | 3 | 4 | 5 }
+    | { layout: 'tabs', columns: 1 | 2 | 3 | 4 | 5 }
+  ```
+  - `default` : 일반 메뉴
+  - `columns` : 컬럼 형태 드롭다운
+  - `tabs` : 탭 형태
+  - 예시 구조
+  ```ts
+  const navigationConfig = [
+    {
+      key: 'uiComponent',
+      path: '',
+      title: 'Ui Component',
+      translateKey: 'nav.uiComponents',
+      icon: 'uiComponents',
+      type: 'title',
+      authority: ['admin', 'user'],
+      meta: {
+        horizontalMenu: { layout: 'columns', columns: 4 }
+      },
+      subMenu: [
+        {
+          key: 'uiComponent.common',
+          path: '',
+          title: 'Common',
+          type: 'collapse',
+          authority: ['admin', 'user'],
+          subMenu: [
+            {
+              key: 'uiComponent.common.button',
+              path: '/button',
+              title: 'Button',
+              type: 'item',
+              authority: ['admin', 'user'],
+              subMenu: []
+            },
+            {
+              key: 'uiComponent.common.typography',
+              path: '/typography',
+              title: 'Typography',
+              type: 'item',
+              authority: ['admin', 'user'],
+              subMenu: []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+  ```
+  - 아이콘 연결
+    - 아이콘은 별도 파일 `src/configs/navigation-icon.config.tsx`에서 관리
+    ```tsx
+    // navigation-icon.config.tsx
+    import {
+        PiHouseLineDuotone,
+        PiArrowsInDuotone,
+        PiBookOpenUserDuotone,
+        PiBookBookmarkDuotone,
+        PiAcornDuotone,
+        PiBagSimpleDuotone,
+    } from 'react-icons/pi'
+    import type { JSX } from 'react'
+
+    export type NavigationIcons = Record<string, JSX.Element>
+
+    const navigationIcon: NavigationIcons = {
+        home: <PiHouseLineDuotone />,
+        singleMenu: <PiAcornDuotone />,
+        collapseMenu: <PiArrowsInDuotone />,
+        groupSingleMenu: <PiBookOpenUserDuotone />,
+        groupCollapseMenu: <PiBookBookmarkDuotone />,
+        groupMenu: <PiBagSimpleDuotone />,
+    }
+
+    export default navigationIcon
+    ```
+  ## 결론
+    원래는 별도에 JSP를 호출해서, 파라미터나 식별자로 인해서 아이콘, 이름을 가져다가 썼는데, 여긴 별도로 아예 네비게이션 관리 딴이 있기 때문에 추가 및 관리 하기가 엄청 편할것 같음 매핑형식이라서 틀만 따라서 관리해도 이슈가 없을 것 같음
+    - navigation.config.ts → 메뉴 트리 구조만 정의
+    - navigation-icon.config.tsx → 아이콘 매핑만 관리
+    - 권한(authority), 다국어(translateKey), 레이아웃(meta) → 전부 옵션으로 붙일 수 있음
