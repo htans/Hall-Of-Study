@@ -1417,3 +1417,205 @@ Starter 버전을 기반으로 커스터마이징하여 CalPop 프로젝트 개�
       - CSS 변수 (`--primary`, `--neutral` 등) 값도 `.dark`에서 정의된 값으로 자동 전환됨
   ### 결론
     theme.config.ts 가 뭐 거의 모든 초기설정을 물고 있는거같고, userTheme 훅이랑 Switcher로 런타임 다크/라이트 전환 가능하고, 기존에 CSS 구조 덕분에 모든게 다 색상이랑 스타일이 맞춰지는것 같음 와 이거 UI 담당자분들 개머리 아프겠네...
+
+## Direction
+  - 전역 기본값
+    - 위치 : `src/configs/theme.config.ts`
+    - 기본값
+    ```ts
+    export const themeConfig = {
+      ...
+      direction: 'ltr', // 기본 Left-to-Right
+    }
+
+    // theme.config.ts
+    import { THEME_ENUM } from '@/constants/theme.constant'
+    import type { Theme } from '@/@types/theme'
+
+    /**
+    * Since some configurations need to be match with specific themes,
+    * we recommend to use the configuration that generated from demo.
+    */
+    export const themeConfig: Theme = {
+        themeSchema: '',
+        direction: THEME_ENUM.DIR_LTR,
+        mode: THEME_ENUM.MODE_LIGHT,
+        panelExpand: false,
+        controlSize: 'md',
+        layout: {
+            type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE,
+            sideNavCollapse: false,
+        },
+    }
+    ```
+    - `rtl`로 바꾸면 전체 앱이 오른쪽에서 왼쪽으로 UI가 뒤집혀서 렌더링됨.
+  - 컴포넌트에서 접근/제어
+    - `usetheme` 훅 사용
+    ```tsx
+    const direction = useTheme((state) => state.direction)       // 현재 방향
+    const setDirection = useTheme((state) => state.setDirection) // 방향 변경 함수
+    ```
+  - DirectionSwitcher 컴포넌트
+    - 버튼 클릭으로 방향 전환 가능
+    ```tsx
+    'use client'
+
+    import Button from '@/components/ui/Button'
+    import InputGroup from '@/components/ui/InputGroup'
+    import useTheme from '@/utils/hooks/useTheme'
+    import { THEME_ENUM } from '@/constants/theme.constant'
+    import type { Direction } from '@/@types/theme'
+
+    const dirList = [
+      { value: THEME_ENUM.DIR_LTR, label: 'LTR' },
+      { value: THEME_ENUM.DIR_RTL, label: 'RTL' },
+    ]
+
+    const DirectionSwitcher = () => {
+      // 여기 부분
+      const direction = useTheme((state) => state.direction)
+      const setDirection = useTheme((state) => state.setDirection)
+      
+      const onDirChange = (val: Direction) => setDirection(val)
+      // !여기 부분
+
+      return (
+        <InputGroup size="sm">
+          {dirList.map((dir) => (
+            <Button
+              key={dir.value}
+              active={direction === dir.value}
+              onClick={() => onDirChange(dir.value)}
+            >
+              {dir.label}
+            </Button>
+          ))}
+        </InputGroup>
+      )
+    }
+
+    export default DirectionSwitcher
+    ```
+  ### 결론
+   기존에 프로젝트에서는 아예 Left 메뉴바를 호출해서 import 하는 형식으로 사용했는데, 여기는 theme 자체에 왼쪽, 오른쪽을 지정해서 전체 툴을 사용할 수 있고, 해당 페이지에서 컴포넌트에서 원하는 메뉴바 형식으로 호출이 가능한것 같음. 확실히 엄청 편해보임
+
+## Overall Theme Config
+  - 위치 : `src/configs/theme.config.ts`
+  - 템플릿의 기본 테마 설정 관리
+  - 모든 값은 커스터마이징 가능하며, `useTheme` 훅으로 제어 가능
+    - 이건 ts에서 개발하는 훅으로 다 건들수 있다 이런거인듯
+  - 변경했는데 적용이 안되면 쿠키에 저장된 theme 키 삭제 필요
+    - 아 여기도 쿠키랑 캐시 이슈가 있나보네
+  ```ts
+  import { THEME_ENUM } from '@/constants/theme.constant'
+  import {
+      Direction,
+      Mode,
+      ControlSize,
+      LayoutType,
+  } from '@/@types/theme'
+
+  export type ThemeConfig = {
+      themeSchema: string
+      direction: Direction
+      mode: Mode
+      panelExpand: boolean
+      controlSize: ControlSize
+      layout: {
+          type: LayoutType
+          sideNavCollapse: boolean
+      }
+  }
+
+  export const themeConfig: ThemeConfig = {
+      themeSchema: '',
+      direction: THEME_ENUM.DIR_LTR,
+      mode: THEME_ENUM.MODE_LIGHT,
+      panelExpand: false,
+      controlSize: 'md',
+      layout: {
+          type: THEME_ENUM.LAYOUT_COLLAPSIBLE_SIDE,
+          sideNavCollapse: false,
+      },
+  }
+  ```
+  - Configuration Properties
+    - themeSchema 
+      - 컬러 스키마 지정 (동적 테마 사용시 비움)
+    - direction
+      - 텍스트 방향
+    - mode
+      - 라이트/다크 모드 전환
+    - panelExpand
+      - 사이드 패널 기본 확정 여부
+    - controlSize
+      - 입력/컨트롤 기본 크기
+    - layout.type
+      - 앱 전체 레이아웃 스타일
+    - layout.sideNavCollapse
+      - 사이드 내비게이션 기본 접힘 여부
+  - State Persistence
+    - 테마 설정은 쿠키에 저장됨
+    - 단, `usetheme` 훅을 통해 변경했을 때만 쿠키에 반영됨
+    - 기본값은 항상 `theme.config.ts`에서 불러옴
+  ### 결론
+    결국에 configs 폴더에는 정말 앱에 모든 설정들과 기본설정 파일들이 다 들어있는것 같음. 문서를 계속 천천히 분석하고 있지만, 결론은적으로 기본 설정은 configs 폴더안에서 가져오고, 페이지 자체에서 훅으로 필요하면 쿠키에 저장되서 별로도 사용하는것 같음. 테마 뿐만이 아니라 모든 기능이나 페이지가 동일되게 돌아가는것 같음. 오;;;
+
+## Build Production
+  - 준비 단계 (Preparing for Deployment)
+    - 환경 변수 확인
+      - `.env`에 API 키, DB URL, Secret 값이 제대로 설정되어 있어야함
+      - 운영/개발 분리 (`.env.production`, `.env.local` 등)
+    - 프로덕션 빌드
+    ```bash
+    npm run build
+    ```
+      - 최적화된 프로덕션 빌드 생성
+    - 로컬 테스트
+    ```bash
+    npm run start
+    ```
+      - 실제 운영 모드와 동일하게 실행해서 문제 없는지 확인
+  - Vercel 배포
+    - Next.js의 공식 호스팅 파트너  
+      - 클릭 몇번이면 끝남
+      - 1. Vercel 로그인 & Git 연동
+        - GitHub/GitLab/Bitbucker 연결 -> 레포 선택
+      - 2. Build 설정
+        - Framework : Next.js
+        - Build Command : `npm run build`
+        - OutPut Directory : 기본값
+      - 3. 환경 변수 설정
+        - Vercel Dashboard 에서 직접 추가
+        - `NEXT_PUBLICK_` 접두사 여부 확인
+      - 4. 배포 실행
+        - `DDeploy` 버튼 클릭
+          - Vercel이 자동으로 빌드/배포
+    - CI/CD 자동화
+    - 도메인 연결 쉬움
+    - Preview Deploy 제공
+  - 커스텀 호스팅 (VPS, 자체 서버 등)
+    - Vercel 대신 서버 직접 쓸 경우
+      - 1. 서버에 Node.js 설치
+        - 운영 서버 Node.js 버전 = 로컬 개발 버전 맞추기
+      - 2. 프로덕션 빌드
+        ```bash
+        npm run build
+        ```
+      - 3. 앱 실행
+        ```bash
+        npm run start
+        ```
+        - 기본 포트 3000 에서 서비스 됨.
+      - 4. 프로세스 매니저 사용 (추천)
+        - pm2
+          ```bash
+          pm2 start npm --name "project-name" -- run start
+          pm2 startup
+          pm2 save
+          ```
+        - Docker (옵션)
+          - Dockerfile 생성
+            - `docker build` & `docker run`
+  ### 결론
+  개인 프로젝트/포폴은 Vercel 배포가 제일 빠르고 편한것 같음. 실무에서는 자체서버가 있을테니까, Docker 기반 배포가 일반적이니까, 운영서버에 docker 설치하고 개발 PC에서 패키징하고 운영서버에 옮겨서 패키징 풀고 도커에 올리고 k8s로 하잇하잇 하면 될것 같은데 음...
