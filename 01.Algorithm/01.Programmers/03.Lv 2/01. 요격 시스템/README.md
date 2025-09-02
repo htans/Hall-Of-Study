@@ -5,33 +5,28 @@
 
 ### 실행문
 ```java
-import java.util.*;
+import java.util.Arrays;
 
 class Solution {
     public int solution(int[][] targets) {
         int answer = 0;
-
-        // 1. 끝나는 지점 기준으로 정렬
-        Arrays.sort(targets, (a, b) -> 
-                    Integer.compare(a[1], b[1]));
-
-        // 2. 마지막으로 요격한 위치 기록
-        double lastShot = -1e9;  // 아주 작은 값으로 초기화
-
-        // 3. 구간 순회하면서 요격 미사일 발사
-        for (int[] t : targets) {
+        
+        Arrays.sort(targets, (a, b) -> (Integer.compare(a[1], b[1])));
+        
+        double lastShot = -1e6;
+        
+        for(int[] t : targets) {
+            
             int s = t[0];
             int e = t[1];
-
-            // lastShot이 현재 구간 (s, e)에 포함되지 않으면 새로 요격
-            // (개구간이라 s < lastShot < e 여야 커버됨)
-            if (!(s < lastShot && lastShot < e)) {
-                // 새 미사일 발사: 끝나는 지점 바로 직전에 쏨
+            
+            if( !( s < lastShot && lastShot < e )) {
                 lastShot = e - 0.5;
                 answer++;
             }
+            
         }
-
+        
         return answer;
     }
 }
@@ -59,7 +54,9 @@ class Solution {
 
             // lastShot이 현재 구간 (s, e)에 포함되지 않으면 새로 요격
             // (개구간이라 s < lastShot < e 여야 커버됨)
-            if (!(s < lastShot && lastShot < e)) {
+            if (
+                !(s < lastShot && lastShot < e)
+                ) {
                 // 새 미사일 발사: 끝나는 지점 바로 직전에 쏨
                 lastShot = e - 0.5;
                 answer++;
