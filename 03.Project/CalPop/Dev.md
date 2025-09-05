@@ -57,92 +57,44 @@ React 기반의 Next.js 프로젝트 이기 때문에 개발하는것도 중요�
         - 처음에는 타입말고, 밑에 값들이 아! 이걸 가라는건가!? 했는데 ㄴㄴㄴ 그냥 정의해놓은거임
         - 정말 화면에 기본적인 설정들을 import만 함 실제로 뭐 하는건 없음
 
-- `import { redirect } from 'next/navigation'` 이 부분은 따로 내부소스에 있는줄 알았는데, Next.js 전용 네비게이션 함수이기 때문에, 내부에 소스를 놓고 뭘 하지는 않음! 라이브러리 같은 개념인듯
-공통적으로 사용되는 네비게이션을 사용하기 위한 준비임
+    - `import { redirect } from 'next/navigation'` 이 부분은 따로 내부소스에 있는줄 알았는데, Next.js 전용 네비게이션 함수이기 때문에, 내부에 소스를 놓고 뭘 하지는 않음! 라이브러리 같은 개념인듯
+    공통적으로 사용되는 네비게이션을 사용하기 위한 준비임
 
-- 실제 페이지가 들어와서 첫번째 움직이는 부분
-    ```tsx 
-    const Page = () => {
-            redirect(appConfig.authenticatedEntryPath)
-        }
-    ```
-    - redirect() 는 Next.js에 내장되어 있는 내장 함수임
-        - Next.js App Router 전용 함수임
-        - 서버 컴포넌트에서만 동작
-    - redirect(appConfig.authenticatedEntryPath) 처럼 authenticatedEntryPath: '/home', 이렇게 정의되어 있기때문에 일단 리다이렉트로 /home으로 보냄
-
-- `export default Page`에서 default는 layout이나 page 같이 기본적으로 라우팅되는 페이지에는 꼭 있어야함. 뭐 이거다! 깃발 꽂는 느낌인듯
-- Page 에서는 `/home`을 가져왔으니까, 거길로 던지는듯
-- 그럼 해당화면으로 이동되면서 네비게이션 이랑 여러가지들을 들고 페이지 영역만 땡겨서와서 뿍뿍
-    ```tsx
-    const Page = () => {
-        return <div>Home page</div>
-    }
-
-    export default Page
-    ```
-
-- 로그인 화면에서 로그인기능을 빡 눌렀을때 그 부분을 확인해봄
-    - 로그인할때 결국에 기능을 타야되고, 타입스크립트 정의된거랑 UI구성이랑 실제 컴포넌트들이 어떤식으로 구성되고, 어떤걸 바꿔야 어떻게 바뀌고 이걸 파악하기 쉬울것 같음  
-    ```tsx
-    // sign-in/page.tsx
-    import SignInClient from './_components/SignInClient' // 로그인 UI를 따로 분리해둔 컴포넌트 가져옴
-
-    const Page = () => {
-        // 로그인 페이지에서 보여줄 컴포넌트 리턴
-        return <SignInClient />
-    }
-
-    export default Page  // Next.js가 이걸 /sign-in 경로 페이지로 인식
-    ```
-- `import SignInClient from './_components/SignInClient'`처럼 Next.js는 컴포넌트들의 구성이였으니까, 해당 컴포넌트들이 모여사는 마을을 불러오는거같음
-    - 아마 이게 기존 내가 쓰던 방식이랑 많이 다른거같음.
-    - 화면 자체에서 <Button></Button> 이런식으로 빡빡 구성했는데, 여긴 컴포넌트를 불러오는 형태니까, 동일된 컴포넌트를 쓰는곳에서 수정한다면 굉장히 편할거고, 유지보수가 쉬울것같은데, 기능도 결국에 한방에 빠빡 굳굳
-    - 그리고 결국에 컴포넌트를 불러오는것 만큼, 컴포넌트를 정의해놓는곳에 기능들도 정의되어있을테니까 하나씩 타고 들어가면 될듯
-    ```tsx
-    // SigninClient.tsx
-    'use client'
-
-    import SignIn from '@/components/auth/SignIn'
-    import { onSignInWithCredentials } from '@/server/actions/auth/handleSignIn'
-    import handleOauthSignIn from '@/server/actions/auth/handleOauthSignIn'
-    import { REDIRECT_URL_KEY } from '@/constants/app.constant'
-    import { useSearchParams } from 'next/navigation'
-    import type {
-        OnSignInPayload,
-        OnOauthSignInPayload,
-    } from '@/components/auth/SignIn'
-
-    const SignInClient = () => {
-        const searchParams = useSearchParams()
-        const callbackUrl = searchParams.get(REDIRECT_URL_KEY)
-
-        const handleSignIn = ({
-            values,
-            setSubmitting,
-            setMessage,
-        }: OnSignInPayload) => {
-            setSubmitting(true)
-
-            onSignInWithCredentials(values, callbackUrl || '').then((data) => {
-                if (data?.error) {
-                    setMessage(data.error as string)
-                    setSubmitting(false)
-                }
-            })
-        }
-
-        const handleOAuthSignIn = async ({ type }: OnOauthSignInPayload) => {
-            if (type === 'google') {
-                await handleOauthSignIn('google')
+    - 실제 페이지가 들어와서 첫번째 움직이는 부분
+        ```tsx 
+        const Page = () => {
+                redirect(appConfig.authenticatedEntryPath)
             }
-            if (type === 'github') {
-                await handleOauthSignIn('github')
-            }
+        ```
+        - redirect() 는 Next.js에 내장되어 있는 내장 함수임
+            - Next.js App Router 전용 함수임
+            - 서버 컴포넌트에서만 동작
+        - redirect(appConfig.authenticatedEntryPath) 처럼 authenticatedEntryPath: '/home', 이렇게 정의되어 있기때문에 일단 리다이렉트로 /home으로 보냄
+
+    - `export default Page`에서 default는 layout이나 page 같이 기본적으로 라우팅되는 페이지에는 꼭 있어야함. 뭐 이거다! 깃발 꽂는 느낌인듯
+    - Page 에서는 `/home`을 가져왔으니까, 일단 `/home` 디렉토리에 page.tsx로 던짐 
+    - 그럼 해당화면으로 이동되면서 네비게이션 이랑 여러가지들을 해당 루트디렉토리에 layout.tsx 을 가져와서 화면에 뿌려주게 됨
+        ```tsx
+        // home/page.tsx
+        const Page = () => {
+            return <div>Home page</div>
         }
 
-        return <SignIn onSignIn={handleSignIn} onOauthSignIn={handleOAuthSignIn} />
-    }
+        export default Page
+        ```
+    - 해당 페이지에는 정말 home 화면만을 위한 컴포넌트만 존재함
+    - 브라우저에서  `localhost:3000`으로 들어오면 `http://localhost:3000/sign-in?redirectUrl=/`로 리다이렉트 되는데, /home으로 던지는데 저기로 가는게 궁금함
+        - 해당 home 디렉토리에 `page.tsx`로 가지만, 네비게이션 레이아웃을 루트디렉토리에서 가져오고 있음 
+        - 아마 여기서 인증관련된 무언가를 해주는게 아닐까 생각함
+        ```tsx
+        // layout.tsx
+        import React from 'react'
+        import PostLoginLayout from '@/components/layouts/PostLoginLayout'
+        import { ReactNode } from 'react'
 
-    export default SignInClient
-    ```
+        const Layout = async ({ children }: { children: ReactNode }) => {
+            return <PostLoginLayout>{children}</PostLoginLayout>
+        }
+
+        export default Layout
+        ```
