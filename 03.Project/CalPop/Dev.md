@@ -88,13 +88,70 @@ React 기반의 Next.js 프로젝트 이기 때문에 개발하는것도 중요�
         - 아마 여기서 인증관련된 무언가를 해주는게 아닐까 생각함
         ```tsx
         // layout.tsx
+        // React 관련 import (기본 JSX 지원을 위해 필요)
         import React from 'react'
-        import PostLoginLayout from '@/components/layouts/PostLoginLayout'
-        import { ReactNode } from 'react'
 
+        // [RF-AUTH] /home 레이아웃 (인증 로직 없음)
+        // 설명: 이 파일은 /home 이하 페이지를 PostLoginLayout(레이아웃/네비 스킨)으로 감싼다.
+        // 실제 인증 가드는 middleware.ts 또는 상위(서버) 레이아웃/가드에서 수행된다.
+        import PostLoginLayout from '@/components/layouts/PostLoginLayout'
+
+        // ReactNode 타입: children 으로 어떤 React 요소든 받을 수 있게 타입 정의
+        import { ReactNode } from 'react'
+        
         const Layout = async ({ children }: { children: ReactNode }) => {
             return <PostLoginLayout>{children}</PostLoginLayout>
         }
 
         export default Layout
+        ```
+        - 그럼 아예 처음에 랜딩페이지에서 하지 않을까?? 인증관련도 섞여일을텐데 Next.js가 이렇게 꽁꽁 일리가 없는데??
+        ```tsx
+        // layout.tsx
+
+        // import auth.ts 
+        import { auth } from '@/auth' 
+        
+        import AuthProvider from '@/components/auth/AuthProvider'
+        import ThemeProvider from '@/components/template/Theme/ThemeProvider'
+        import pageMetaConfig from '@/configs/page-meta.config'
+        import NavigationProvider from '@/components/template/Navigation/NavigationProvider'
+        import { getNavigation } from '@/server/actions/navigation/getNavigation'
+        import { getTheme } from '@/server/actions/theme'
+        import type { ReactNode } from 'react'
+        import '@/assets/styles/app.css'
+
+        export const metadata = {
+            ...pageMetaConfig,
+        }
+
+        export default async function RootLayout({
+            children,
+        }: Readonly<{
+            children: ReactNode
+        }>) {
+            const session = await auth()
+
+            const navigationTree = await getNavigation()
+
+            const theme = await getTheme()
+
+            return (
+                <AuthProvider session={session}>
+                    <html
+                        className={theme.mode === 'dark' ? 'dark' : 'light'}
+                        dir={theme.direction}
+                        suppressHydrationWarning
+                    >
+                        <body suppressHydrationWarning>
+                            <ThemeProvider theme={theme}>
+                                <NavigationProvider navigationTree={navigationTree}>
+                                    {children}
+                                </NavigationProvider>
+                            </ThemeProvider>
+                        </body>
+                    </html>
+                </AuthProvider>
+            )
+        }
         ```
