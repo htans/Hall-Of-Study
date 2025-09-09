@@ -154,3 +154,206 @@ React 기반의 Next.js 프로젝트 이기 때문에 개발하는것도 중요�
         }
         ```
         - `import { auth } from '@/auth'` 가 있긴한데, 이건 NextAuth에서 섹션 가져오는 전용 함수
+        - `@/auth` 가 인증관련 라이브러리 이니까, 여기를 탐구해봐야겠음
+        ```tsx
+        // @auth/core/src/index.js
+
+        console.log("STEP 1 ::: ");
+
+        export async function Auth(request, config) {
+            const logger = setLogger(config);
+            const internalRequest = await toInternalRequest(request, config);
+
+            console.log("STEP 2 ::: ");
+
+            // There was an error parsing the request
+            if (!internalRequest)
+                return Response.json(`Bad request.`, { status: 400 });
+            const warningsOrError = assertConfig(internalRequest, config);
+            if (Array.isArray(warningsOrError)) {
+                warningsOrError.forEach(logger.warn);
+            }
+            else if (warningsOrError) {
+                // If there's an error in the user config, bail out early
+                logger.error(warningsOrError);
+                const htmlPages = new Set([
+                    "signin",
+                    "signout",
+                    "error",
+                    "verify-request",
+                ]);
+                if (!htmlPages.has(internalRequest.action) ||
+                    internalRequest.method !== "GET") {
+                    const message = "There was a problem with the server configuration. Check the server logs for more information.";
+                    return Response.json({ message }, { status: 500 });
+                }
+                const { pages, theme } = config;
+                // If this is true, the config required auth on the error page
+                // which could cause a redirect loop
+                const authOnErrorPage = pages?.error &&
+                    internalRequest.url.searchParams
+                        .get("callbackUrl")
+                        ?.startsWith(pages.error);
+                // Either there was no error page configured or the configured one contains infinite redirects
+                if (!pages?.error || authOnErrorPage) {
+                    if (authOnErrorPage) {
+                        logger.error(new ErrorPageLoop(`The error page ${pages?.error} should not require authentication`));
+                    }
+                    const page = renderPage({ theme }).error("Configuration");
+                    return toResponse(page);
+                }
+                const url = `${internalRequest.url.origin}${pages.error}?error=Configuration`;
+
+                return Response.redirect(url);
+            }
+
+            const isRedirect = request.headers?.has("X-Auth-Return-Redirect");
+            const isRaw = config.raw === raw;
+            try {
+
+                console.log("STEP 4 ::: before AuthInternal");
+                const internalResponse = await AuthInternal(internalRequest, config);
+                console.log("STEP 4 ::: after AuthInternal");
+
+                if (isRaw)
+                    return internalResponse;
+                const response = toResponse(internalResponse);
+                const url = response.headers.get("Location");
+
+                if (!isRedirect || !url)
+
+                    console.log("STEP 5 ::: return response");
+                    console.log("response : " + response);
+                    // 해당 사용자는 인증된 사용자도 아니기 때문에, 보낼 URL이 없다! 라고 response 로 던짐
+
+                    return response;
+                return Response.json({ url }, { headers: response.headers });
+            }
+            catch (e) {
+
+                const error = e;
+                logger.error(error);
+                const isAuthError = error instanceof AuthError;
+                if (isAuthError && isRaw && !isRedirect)
+                    throw error;
+                // If the CSRF check failed for POST/session, return a 400 status code.
+                // We should not redirect to a page as this is an API route
+                if (request.method === "POST" && internalRequest.action === "session")
+                    return Response.json(null, { status: 400 });
+                const isClientSafeErrorType = isClientError(error);
+                const type = isClientSafeErrorType ? error.type : "Configuration";
+                const params = new URLSearchParams({ error: type });
+                if (error instanceof CredentialsSignin)
+                    params.set("code", error.code);
+                const pageKind = (isAuthError && error.kind) || "error";
+                const pagePath = config.pages?.[pageKind] ?? `${config.basePath}/${pageKind.toLowerCase()}`;
+                const url = `${internalRequest.url.origin}${pagePath}?${params}`;
+                if (isRedirect)
+                    return Response.json({ url });
+
+                return Response.redirect(url);
+            }
+        }
+        ```
+        - 결국에 @auth 에서는 이 사용자는 인증된 사용자도 아니니까, URL로 없어! 라고 뱉어버리고 그걸 미들웨어에서 `sign-in`으로 뱉어버리는거같은데
+        ```ts
+        import NextAuth from 'next-auth'
+
+        import authConfig from '@/configs/auth.config' // 인증 라이브러리 설정
+        import {
+            authRoutes as _authRoutes, // 인증 관련 경로 목록
+            publicRoutes as _publicRoutes, // 공개 경로 목록
+        } from '@/configs/routes.config'
+        import { REDIRECT_URL_KEY } from '@/constants/app.constant' // 리다이렉트 쿼리 키 이름
+        import appConfig from '@/configs/app.config' // 앱 설정 (로그인/비로그인 진입 경로 등)
+
+        const { auth } = NextAuth(authConfig) // NextAuth 미들웨어 함수 추출
+
+        // 공개 및 인증 경로에서 경로(pathname)만 배열로 추출
+        const publicRoutes = Object.entries(_publicRoutes).map(([key]) => key)
+        const authRoutes = Object.entries(_authRoutes).map(([key]) => key)
+
+        // API 인증 경로 접두어 (예: '/api/auth')
+        const apiAuthPrefix = `${appConfig.apiPrefix}/auth`
+
+        // 미들웨어 기본 함수: 요청 객체 받음
+        export default auth((req) => {
+            const { nextUrl } = req // 요청의 URL 정보 추출
+            const isSignedIn = !!req.auth // 인증 여부 판단 (로그인 시 req.auth가 있음)
+
+            // API 인증 경로인지 확인 (ex. /api/auth/*)
+            const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix)
+            // 공개 경로인지 판별 (회원가입, 로그인 등)
+            const isPublicRoute = publicRoutes.includes(nextUrl.pathname)
+            // 인증 전용 경로인지 판별 (예: 로그인 페이지 등)
+            const isAuthRoute = authRoutes.includes(nextUrl.pathname)
+
+            /** API 인증 경로는 미들웨어 적용 안 함 (인증 자체가 API에서 처리되므로) */
+            if (isApiAuthRoute) return
+
+            // 여기서 요청한 nextUrl이 나옴
+            console.log("nextUrl : " + nextUrl);
+            // nextUrl : http://localhost:3000/sign-in?redirectUrl=%2F 찾았다 이놈
+            
+            /** 
+            * 인증 전용 경로(로그인, 회원가입 페이지 등)에 로그인 상태로 접근 시
+            * 이미 로그인했으므로 인증 성공 진입 경로로 리다이렉트
+            */
+            if (isAuthRoute) {
+                if (isSignedIn) {
+                    return Response.redirect(
+                        new URL(appConfig.authenticatedEntryPath, nextUrl), // 예: /home
+                    )
+                }
+                return // 로그인 안 됐으면 인증 경로 접근 허용 (로그인 페이지 보여줌)
+            }
+
+            /** 
+            * 로그인하지 않은 사용자가 비공개 페이지 접근 시
+            * 로그인 페이지로 리다이렉트하면서 원래 요청 경로를 쿼리로 전달
+            */
+            if (!isSignedIn && !isPublicRoute) {
+                // 원래 요청 경로 + 쿼리 문자열을 callbackUrl 변수로 저장
+                let callbackUrl = nextUrl.pathname
+                if (nextUrl.search) {
+                    callbackUrl += nextUrl.search
+                }
+
+                // 로그인 페이지로 리다이렉트 (예: /sign-in?redirectUrl=원래경로)
+                return Response.redirect(
+                    new URL(
+                        `${appConfig.unAuthenticatedEntryPath}?${REDIRECT_URL_KEY}=${callbackUrl}`,
+                        nextUrl,
+                    ),
+                )
+            }
+
+            /** 
+            * (주석 처리됨) 역할 기반 접근 제어 예시
+            * 로그인 상태이며 접근 권한 없는 경우에는
+            * /access-denied 페이지로 리다이렉트 처리
+            */
+            // if (isSignedIn && nextUrl.pathname !== '/access-denied') {
+            //     const routeMeta = protectedRoutes[nextUrl.pathname]
+            //     const includedRole = routeMeta?.authority.some((role) => req.auth?.user?.authority.includes(role))
+            //     if (!includedRole) {
+            //         return Response.redirect(
+            //             new URL('/access-denied', nextUrl),
+            //         )
+            //     }
+            // }
+        })
+
+        // 이 미들웨어가 적용될 경로 설정
+        export const config = {
+            matcher: ['/((?!.+\\.[\\w]+$|_next).*)', '/', '/(api)(.*)'],
+            // 설명:
+            //  - 정적 파일이나 _next 내부 리소스를 제외
+            //  - 루트 경로('/') 포함
+            //  - /api 경로 및 그 하위도 포함
+        }
+        ```
+        - 해당 요청값으로 `nextUrl : http://localhost:3000/sign-in?redirectUrl=%2F` 이렇게 나오는데, 이는 `@auth` 에서 `Null`로 뱉었으니까, 인증된 사용자가 아니니까! 리다이렉트할 URL도 없어! 하니까 미들웨어가 ㅇㅇㅇ ㅇㅋ 그럼 app.config.ts에 선언되어 있는 `unAuthenticatedEntryPath : /sign-in` 으로 떤진다!! 
+        - ㄹㅇ 이 리다이렉트 문구 하나 찾을려고 일주일 걸렸음... ㅠㅠ.... ㅋㅋㅋㅋㅋㅋㅋ
+        - 그래도 이 구조 자체가 일반적인 `Next.js + 인증 라이브러리 조합에서 권장되는 인증 처리 방식` 이라는거네 
+            - 개쩐다
