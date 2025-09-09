@@ -131,9 +131,7 @@ React 기반의 Next.js 프로젝트 이기 때문에 개발하는것도 중요�
             children: ReactNode
         }>) {
             const session = await auth()
-
             const navigationTree = await getNavigation()
-
             const theme = await getTheme()
 
             return (
@@ -155,3 +153,4 @@ React 기반의 Next.js 프로젝트 이기 때문에 개발하는것도 중요�
             )
         }
         ```
+        - `import { auth } from '@/auth'` 가 있긴한데, 이건 NextAuth에서 섹션 가져오는 전용 함수
