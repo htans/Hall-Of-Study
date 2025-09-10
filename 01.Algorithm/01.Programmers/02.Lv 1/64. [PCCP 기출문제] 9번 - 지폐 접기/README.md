@@ -1,4 +1,4 @@
-# [level 1] [PCCP 기출문제] 1번 - 지폐 접기
+# [level 1] [PCCP 기출문제] 9번 - 지폐 접기
 
 * [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/340199)
 
