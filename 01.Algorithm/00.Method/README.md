@@ -128,3 +128,56 @@ let arr4 = [2]; arr4.unshift(1);         // [1, 2]
 "hello".charCodeAt(1);               // 101
 "apple".localeCompare("banana");     // -1
 ```
+
+## HashSet
+```java
+import java.util.*;
+
+HashSet<Integer> set = new HashSet<>();
+
+set.add(1);              // 원소 추가
+set.add(2);
+set.add(1);              // 중복 추가 → 무시됨
+
+set.contains(2);         // true (포함 여부 확인)
+set.remove(2);           // 원소 삭제
+set.size();              // 크기 반환
+set.isEmpty();           // 비었는지 확인
+```
+
+## HashMap
+```java
+import java.util.*;
+
+HashMap<String, Integer> map = new HashMap<>();
+
+map.put("apple", 3);      // 값 추가
+map.put("banana", 2);
+map.put("apple", 5);      // 같은 키 다시 put → 값 덮어쓰기
+
+map.get("apple");         // 5 (값 꺼내기)
+map.getOrDefault("pear", 0); // 없는 키면 기본값 반환
+
+map.containsKey("banana"); // true
+map.remove("banana");      // 키 삭제
+map.size();                // 크기 반환
+map.keySet();              // 모든 키 집합 반환
+map.values();              // 모든 값 집합 반환
+```
+
+##Queue (FIFO, LinkedList로 많이 씀)
+```java
+import java.util.*;
+
+Queue<Integer> q = new LinkedList<>();
+
+q.add(1);                 // 삽입 (실패 시 예외)
+q.offer(2);               // 삽입 (실패 시 false)
+
+q.peek();                 // 맨 앞 값 확인 (비어있으면 null)
+q.poll();                 // 맨 앞 값 꺼내고 제거 (비어있으면 null)
+q.remove();               // 맨 앞 값 꺼내고 제거 (비어있으면 예외)
+
+q.isEmpty();              // 비었는지 확인
+q.size();                 // 크기 반환
+```
